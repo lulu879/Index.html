@@ -4,19 +4,10 @@
 
 A clean, accessible, and testable **Todo / Task Card** component built with semantic HTML, CSS, and vanilla JavaScript.
 
-Built as part of the **Frontend Wizards Internship Program — Stage 0 Task**.
 
 ---
 
 
-
----
-
-## 📸 Preview
-
-> *(Add a screenshot here after deployment)*
-
----
 
 ## ✨ Features
 
@@ -94,7 +85,7 @@ todo-card-stage-0/
 ## 👤 Author
 
 **Your Name**
-- GitHub: 
+- GitHub: https://github.com/lulu879/Index.html
 
 README.md
 Displaying README.md.
