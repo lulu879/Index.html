@@ -8,7 +8,7 @@ Built as part of the **Frontend Wizards Internship Program — Stage 1a Task** (
 ---
 
  🔗 Live Demo
-https://vercel.com/lulu879s-projects/index-html2/BiwEzh8DcgaQ2ASZzHgKG6zGAwPa
+https://index-html2-git-main-lulu879s-projects.vercel.app/
 
 
 ---
