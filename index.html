@@ -3,30 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Todo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <title>Todo Card — Stage 1a</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0e0f14;
-      --surface: #16181f;
-      --surface2: #1e2028;
-      --border: #2a2d38;
-      --text: #e8eaf0;
-      --muted: #7c8099;
-      --accent: #7b68ee;
-      --accent2: #5be6c8;
-      --danger: #ff6b6b;
-      --warn: #ffc26b;
-      --ok: #6bffb8;
-      --low: #6bffb8;
-      --medium: #ffc26b;
-      --high: #ff6b6b;
-      --done: #5be6c8;
-      --radius: 18px;
-      --font: 'Syne', sans-serif;
-      --mono: 'DM Mono', monospace;
+      --bg: #0a0b0f;
+      --surface: #111318;
+      --surface2: #181b23;
+      --surface3: #1e2230;
+      --border: #252935;
+      --border2: #2f3445;
+      --text: #e2e5f0;
+      --text2: #9aa0b8;
+      --muted: #5c6278;
+      --font: 'Bricolage Grotesque', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+
+      /* priority colors */
+      --low-color: #34d399;
+      --low-bg: #0a2018;
+      --low-border: #134030;
+      --medium-color: #fbbf24;
+      --medium-bg: #1f1500;
+      --medium-border: #3d2a00;
+      --high-color: #f87171;
+      --high-bg: #200a0a;
+      --high-border: #3d1414;
+
+      /* status colors */
+      --pending-color: #94a3b8;
+      --inprogress-color: #60a5fa;
+      --inprogress-bg: #0a1628;
+      --done-color: #34d399;
+      --done-bg: #0a2018;
+
+      --radius: 20px;
+      --radius-sm: 10px;
+      --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     body {
@@ -36,107 +51,102 @@
       align-items: center;
       justify-content: center;
       font-family: var(--font);
-      padding: 24px 16px;
-      background-image: radial-gradient(ellipse at 20% 20%, #1a1440 0%, transparent 60%),
-                        radial-gradient(ellipse at 80% 80%, #0d2a22 0%, transparent 60%);
+      padding: 32px 16px;
+      background-image:
+        radial-gradient(ellipse 60% 40% at 10% 10%, #0d1a35 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 90% 90%, #120d1f 0%, transparent 70%);
     }
 
-    /* === CARD === */
+    /* ===================== CARD ===================== */
     article[data-testid="test-todo-card"] {
+      width: 100%;
+      max-width: 500px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      width: 100%;
-      max-width: 480px;
       overflow: hidden;
-      box-shadow: 0 0 0 1px #ffffff08, 0 24px 60px #00000066;
-      transition: box-shadow 0.3s ease;
+      box-shadow: 0 0 0 1px #ffffff06, 0 32px 80px #00000080;
       position: relative;
+      transition: box-shadow var(--transition);
     }
 
     article[data-testid="test-todo-card"]:focus-within {
-      box-shadow: 0 0 0 2px var(--accent), 0 24px 60px #00000066;
+      box-shadow: 0 0 0 1px var(--border2), 0 32px 80px #00000080;
     }
 
-    /* top colour stripe */
-    .card-stripe {
-      height: 4px;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
+    /* Priority indicator — left border accent */
+    [data-testid="test-todo-priority-indicator"] {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      border-radius: var(--radius) 0 0 var(--radius);
+      transition: background var(--transition);
     }
+    .priority-low [data-testid="test-todo-priority-indicator"]  { background: var(--low-color); }
+    .priority-medium [data-testid="test-todo-priority-indicator"] { background: var(--medium-color); }
+    .priority-high [data-testid="test-todo-priority-indicator"] { background: var(--high-color); }
 
-    .card-inner {
-      padding: 24px;
-    }
+    .card-body { padding: 24px 24px 24px 28px; }
 
-    /* === HEADER ROW === */
-    .card-header {
+    /* ===================== TOP ROW ===================== */
+    .card-top {
       display: flex;
       align-items: flex-start;
       gap: 14px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
-    /* checkbox */
-    .toggle-wrap {
-      flex-shrink: 0;
-      margin-top: 3px;
-    }
+    /* Checkbox */
+    .toggle-wrap { flex-shrink: 0; padding-top: 3px; }
 
     input[data-testid="test-todo-complete-toggle"] {
       appearance: none;
-      -webkit-appearance: none;
-      width: 22px;
-      height: 22px;
-      border: 2px solid var(--border);
+      width: 22px; height: 22px;
+      border: 2px solid var(--border2);
       border-radius: 6px;
       background: var(--surface2);
       cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
       display: grid;
       place-content: center;
+      transition: all var(--transition);
       outline: none;
+      flex-shrink: 0;
     }
-
     input[data-testid="test-todo-complete-toggle"]:focus-visible {
-      outline: 2px solid var(--accent);
+      outline: 2px solid #60a5fa;
       outline-offset: 3px;
     }
-
     input[data-testid="test-todo-complete-toggle"]:checked {
-      background: var(--accent);
-      border-color: var(--accent);
+      background: var(--done-color);
+      border-color: var(--done-color);
     }
-
     input[data-testid="test-todo-complete-toggle"]:checked::after {
       content: '';
-      display: block;
-      width: 6px;
-      height: 10px;
-      border: 2px solid #fff;
-      border-top: none;
-      border-left: none;
+      width: 6px; height: 10px;
+      border: 2.5px solid #fff;
+      border-top: none; border-left: none;
       transform: rotate(45deg) translate(-1px, -1px);
+      display: block;
     }
 
-    .title-group { flex: 1; min-width: 0; }
+    .title-area { flex: 1; min-width: 0; }
 
     h2[data-testid="test-todo-title"] {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: 700;
       color: var(--text);
-      line-height: 1.3;
-      transition: color 0.25s, text-decoration 0.25s;
+      line-height: 1.35;
       overflow-wrap: break-word;
-      word-break: break-word;
+      transition: color var(--transition), text-decoration var(--transition);
     }
 
-    .card-root.done h2[data-testid="test-todo-title"] {
+    .state-done h2[data-testid="test-todo-title"] {
       text-decoration: line-through;
       color: var(--muted);
     }
 
-    /* === BADGES ROW === */
-    .badges {
+    /* ===================== BADGES ROW ===================== */
+    .badges-row {
       display: flex;
       align-items: center;
       gap: 8px;
@@ -145,138 +155,207 @@
     }
 
     .badge {
-      font-size: 0.68rem;
-      font-weight: 600;
       font-family: var(--mono);
+      font-size: 0.65rem;
+      font-weight: 600;
       padding: 3px 10px;
       border-radius: 100px;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
+      border: 1px solid transparent;
+      display: flex; align-items: center; gap: 5px;
     }
 
-    [data-testid="test-todo-priority"][data-level="Low"] {
-      background: #0d2a1e;
-      color: var(--low);
-      border: 1px solid #1a4a35;
+    /* Priority badge */
+    .priority-low [data-testid="test-todo-priority"] {
+      background: var(--low-bg); color: var(--low-color); border-color: var(--low-border);
     }
-    [data-testid="test-todo-priority"][data-level="Medium"] {
-      background: #2a1e00;
-      color: var(--medium);
-      border: 1px solid #4a3800;
+    .priority-medium [data-testid="test-todo-priority"] {
+      background: var(--medium-bg); color: var(--medium-color); border-color: var(--medium-border);
     }
-    [data-testid="test-todo-priority"][data-level="High"] {
-      background: #2a0e0e;
-      color: var(--high);
-      border: 1px solid #4a1a1a;
+    .priority-high [data-testid="test-todo-priority"] {
+      background: var(--high-bg); color: var(--high-color); border-color: var(--high-border);
     }
 
+    /* Status badge */
     [data-testid="test-todo-status"] {
       background: var(--surface2);
-      color: var(--muted);
-      border: 1px solid var(--border);
+      color: var(--pending-color);
+      border-color: var(--border2);
+    }
+    .state-inprogress [data-testid="test-todo-status"] {
+      background: var(--inprogress-bg); color: var(--inprogress-color); border-color: #1a3a5c;
+    }
+    .state-done [data-testid="test-todo-status"] {
+      background: var(--done-bg); color: var(--done-color); border-color: var(--low-border);
     }
 
-    .card-root.done [data-testid="test-todo-status"] {
-      background: #0d2622;
-      color: var(--done);
-      border-color: #1a4a3f;
+    /* Overdue indicator */
+    [data-testid="test-todo-overdue-indicator"] {
+      background: #200a0a;
+      color: #f87171;
+      border-color: #3d1414;
+      display: none;
     }
+    .is-overdue [data-testid="test-todo-overdue-indicator"] { display: flex; }
 
-    /* === DESCRIPTION === */
+    /* ===================== DESCRIPTION ===================== */
+    .description-wrap { margin: 14px 0; }
+
     p[data-testid="test-todo-description"] {
-      font-size: 0.88rem;
-      color: var(--muted);
-      line-height: 1.6;
-      margin: 14px 0;
+      font-size: 0.875rem;
+      color: var(--text2);
+      line-height: 1.65;
       overflow-wrap: break-word;
-      word-break: break-word;
     }
 
-    /* === DIVIDER === */
-    .divider {
-      height: 1px;
-      background: var(--border);
-      margin: 16px 0;
+    [data-testid="test-todo-collapsible-section"] {
+      overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
+      max-height: 0;
+      opacity: 0;
+    }
+    [data-testid="test-todo-collapsible-section"].expanded {
+      max-height: 400px;
+      opacity: 1;
     }
 
-    /* === DATE BLOCK === */
+    button[data-testid="test-todo-expand-toggle"] {
+      background: none;
+      border: none;
+      color: #60a5fa;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      letter-spacing: 0.04em;
+      outline: none;
+      margin-top: 6px;
+    }
+    button[data-testid="test-todo-expand-toggle"]:focus-visible {
+      outline: 2px solid #60a5fa;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+    .expand-arrow {
+      display: inline-block;
+      transition: transform 0.3s ease;
+      font-style: normal;
+    }
+    button[data-testid="test-todo-expand-toggle"][aria-expanded="true"] .expand-arrow {
+      transform: rotate(180deg);
+    }
+
+    /* ===================== DIVIDER ===================== */
+    .divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+    /* ===================== STATUS CONTROL ===================== */
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .status-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      flex-shrink: 0;
+    }
+
+    select[data-testid="test-todo-status-control"] {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      padding: 6px 28px 6px 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235c6278' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+    select[data-testid="test-todo-status-control"]:focus-visible {
+      outline: 2px solid #60a5fa;
+      outline-offset: 2px;
+    }
+    select[data-testid="test-todo-status-control"]:hover {
+      border-color: #60a5fa;
+    }
+
+    /* ===================== DATE BLOCK ===================== */
     .date-block {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      margin-bottom: 16px;
+      gap: 3px;
+      margin-bottom: 14px;
     }
-
     .date-label {
-      font-size: 0.68rem;
       font-family: var(--mono);
+      font-size: 0.65rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--muted);
     }
-
     time[data-testid="test-todo-due-date"] {
-      font-size: 0.9rem;
+      font-size: 0.875rem;
       font-weight: 600;
       color: var(--text);
     }
-
     [data-testid="test-todo-time-remaining"] {
-      font-size: 0.8rem;
       font-family: var(--mono);
-      color: var(--accent2);
-      display: inline-block;
+      font-size: 0.75rem;
+      color: var(--done-color);
       margin-top: 2px;
     }
+    [data-testid="test-todo-time-remaining"].overdue { color: var(--high-color); }
+    [data-testid="test-todo-time-remaining"].due-soon { color: var(--medium-color); }
+    [data-testid="test-todo-time-remaining"].completed { color: var(--muted); }
 
-    [data-testid="test-todo-time-remaining"].overdue {
-      color: var(--danger);
-    }
-
-    [data-testid="test-todo-time-remaining"].due-soon {
-      color: var(--warn);
-    }
-
-    /* === TAGS === */
+    /* ===================== TAGS ===================== */
     ul[data-testid="test-todo-tags"] {
       list-style: none;
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 20px;
+      gap: 7px;
+      margin-bottom: 18px;
     }
-
     ul[data-testid="test-todo-tags"] li {
-      font-size: 0.72rem;
       font-family: var(--mono);
-      padding: 4px 12px;
+      font-size: 0.68rem;
+      padding: 4px 11px;
       border-radius: 100px;
       background: var(--surface2);
       border: 1px solid var(--border);
       color: var(--muted);
-      letter-spacing: 0.04em;
-      transition: border-color 0.2s, color 0.2s;
+      letter-spacing: 0.03em;
+      transition: all var(--transition);
     }
-
     ul[data-testid="test-todo-tags"] li:hover {
-      border-color: var(--accent);
-      color: var(--text);
+      border-color: var(--border2);
+      color: var(--text2);
     }
 
-    /* === ACTION BUTTONS === */
-    .card-actions {
-      display: flex;
-      gap: 10px;
-    }
+    /* ===================== ACTION BUTTONS ===================== */
+    .card-actions { display: flex; gap: 10px; }
 
     .btn {
       flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
       padding: 10px 16px;
-      border-radius: 10px;
+      border-radius: var(--radius-sm);
       border: 1px solid var(--border);
       background: var(--surface2);
       color: var(--muted);
@@ -284,93 +363,166 @@
       font-size: 0.82rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all var(--transition);
       outline: none;
     }
+    .btn:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
+    .btn-edit:hover { background: #0d1a35; border-color: #60a5fa; color: #60a5fa; }
+    .btn-delete:hover { background: var(--high-bg); border-color: var(--high-color); color: var(--high-color); }
+    .btn-save { background: #0d2018; border-color: var(--low-border); color: var(--low-color); }
+    .btn-save:hover { background: #103025; border-color: var(--low-color); }
+    .btn-cancel:hover { background: var(--surface3); border-color: var(--border2); color: var(--text2); }
 
-    .btn:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
+    /* ===================== EDIT FORM ===================== */
+    [data-testid="test-todo-edit-form"] {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+      padding: 20px 24px 20px 28px;
+      border-top: 1px solid var(--border);
+      background: var(--surface2);
+      animation: slideDown 0.25s ease;
+    }
+    [data-testid="test-todo-edit-form"].visible { display: flex; }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    .btn-edit:hover {
-      background: #1c1a33;
-      border-color: var(--accent);
-      color: var(--accent);
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+    .form-group label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
     }
 
-    .btn-delete:hover {
-      background: #2a1212;
-      border-color: var(--danger);
-      color: var(--danger);
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.875rem;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      outline: none;
+      transition: border-color var(--transition);
+      width: 100%;
     }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 3px #60a5fa20;
+    }
+    .form-group textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+    .form-group select { appearance: none; cursor: pointer; }
 
-    /* icon SVGs */
-    .btn svg { flex-shrink: 0; }
+    .form-row { display: flex; gap: 12px; }
+    .form-row .form-group { flex: 1; }
 
-    /* === RESPONSIVE === */
+    .form-actions { display: flex; gap: 10px; margin-top: 4px; }
+
+    /* ===================== RESPONSIVE ===================== */
     @media (max-width: 520px) {
-      article[data-testid="test-todo-card"] { border-radius: 14px; }
-      .card-inner { padding: 18px; }
+      .card-body { padding: 18px 18px 18px 22px; }
+      [data-testid="test-todo-edit-form"] { padding: 16px 18px 16px 22px; }
+      .form-row { flex-direction: column; }
       h2[data-testid="test-todo-title"] { font-size: 1rem; }
+    }
+
+    @media (min-width: 768px) {
+      article[data-testid="test-todo-card"] { max-width: 500px; }
     }
   </style>
 </head>
 <body>
 
-<article data-testid="test-todo-card" class="card-root" aria-label="Todo task card">
-  <div class="card-stripe"></div>
-  <div class="card-inner">
+<article
+  data-testid="test-todo-card"
+  class="priority-high"
+  aria-label="Todo task card"
+>
+  <!-- Priority indicator bar -->
+  <div data-testid="test-todo-priority-indicator" aria-hidden="true"></div>
 
-    <!-- Header: checkbox + title + badges -->
-    <div class="card-header">
+  <!-- ===== CARD BODY ===== -->
+  <div class="card-body">
+
+    <!-- Top row: checkbox + title + badges -->
+    <div class="card-top">
       <div class="toggle-wrap">
-        <label for="task-toggle" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Mark task as complete</label>
+        <label for="task-toggle" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Mark task as complete</label>
         <input
           type="checkbox"
           id="task-toggle"
           data-testid="test-todo-complete-toggle"
           aria-label="Mark task as complete"
-          onchange="handleToggle(this)"
         />
       </div>
 
-      <div class="title-group">
+      <div class="title-area">
         <h2 data-testid="test-todo-title">Redesign the onboarding flow screens</h2>
-        <div class="badges">
-          <span
-            class="badge"
-            data-testid="test-todo-priority"
-            data-level="High"
-            aria-label="Priority: High"
-          >🔴 High</span>
-          <span
-            class="badge"
-            data-testid="test-todo-status"
-            id="status-badge"
-            aria-label="Status: In Progress"
-          >In Progress</span>
+        <div class="badges-row">
+          <span data-testid="test-todo-priority" class="badge" aria-label="Priority: High">🔴 High</span>
+          <span data-testid="test-todo-status" class="badge" aria-label="Status: In Progress">In Progress</span>
+          <span data-testid="test-todo-overdue-indicator" class="badge" aria-label="This task is overdue">⚠ Overdue</span>
         </div>
       </div>
     </div>
 
-    <!-- Description -->
-    <p data-testid="test-todo-description">
-      Revamp the three-step onboarding screens with updated copy, new illustrations, and improved accessibility. Coordinate with the copy team before finalising the designs.
-    </p>
+    <!-- Description with expand/collapse -->
+    <div class="description-wrap">
+      <p data-testid="test-todo-description">
+        Revamp the three-step onboarding screens with updated copy and new illustrations.
+      </p>
+      <div
+        data-testid="test-todo-collapsible-section"
+        id="collapsible-desc"
+        role="region"
+        aria-label="Full description"
+      >
+        <p style="font-size:0.875rem;color:var(--text2);line-height:1.65;padding-top:8px;">
+          Coordinate with the copy team before finalising the designs. Ensure the new flow meets WCAG AA accessibility standards and is tested across iOS, Android, and web. Illustrations should be delivered in SVG format and handed off via Figma. Timeline: designs due end of sprint, dev handoff the following Monday.
+        </p>
+      </div>
+      <button
+        data-testid="test-todo-expand-toggle"
+        aria-expanded="false"
+        aria-controls="collapsible-desc"
+      >
+        <i class="expand-arrow" aria-hidden="true">▾</i>
+        <span class="toggle-label">Show more</span>
+      </button>
+    </div>
 
     <div class="divider"></div>
+
+    <!-- Status control -->
+    <div class="status-row">
+      <span class="status-label" id="status-label">Status</span>
+      <select
+        data-testid="test-todo-status-control"
+        aria-labelledby="status-label"
+        aria-label="Task status"
+      >
+        <option value="Pending">Pending</option>
+        <option value="In Progress" selected>In Progress</option>
+        <option value="Done">Done</option>
+      </select>
+    </div>
 
     <!-- Due date + time remaining -->
     <div class="date-block">
       <span class="date-label">Deadline</span>
-      <time
-        data-testid="test-todo-due-date"
-        datetime="2026-04-16T23:59:00Z"
-      >Due Apr 17, 2026</time>
+      <time data-testid="test-todo-due-date" datetime="2026-05-01T18:00:00Z">Due May 1, 2026</time>
       <span
         data-testid="test-todo-time-remaining"
-        id="time-remaining"
         aria-live="polite"
         aria-atomic="true"
       >Calculating…</span>
@@ -378,101 +530,293 @@
 
     <!-- Tags -->
     <ul data-testid="test-todo-tags" role="list" aria-label="Task tags">
-      <li data-testid="test-todo-tag-work">work</li>
-      <li data-testid="test-todo-tag-urgent">urgent</li>
-      <li data-testid="test-todo-tag-design">design</li>
+      <li data-testid="test-todo-tag-work">#work</li>
+      <li data-testid="test-todo-tag-urgent">#urgent</li>
+      <li data-testid="test-todo-tag-design">#design</li>
     </ul>
 
     <!-- Action buttons -->
     <div class="card-actions">
-      <button
-        data-testid="test-todo-edit-button"
-        class="btn btn-edit"
-        aria-label="Edit task"
-        onclick="console.log('edit clicked')"
-      >
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-        </svg>
+      <button data-testid="test-todo-edit-button" class="btn btn-edit" aria-label="Edit task">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         Edit
       </button>
-      <button
-        data-testid="test-todo-delete-button"
-        class="btn btn-delete"
-        aria-label="Delete task"
-        onclick="alert('Delete clicked')"
-      >
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <polyline points="3 6 5 6 21 6"/>
-          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-          <path d="M10 11v6M14 11v6"/>
-          <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-        </svg>
+      <button data-testid="test-todo-delete-button" class="btn btn-delete" aria-label="Delete task">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
         Delete
       </button>
     </div>
-
   </div>
+
+  <!-- ===== EDIT FORM ===== -->
+  <div data-testid="test-todo-edit-form" role="form" aria-label="Edit task form">
+    <div class="form-group">
+      <label for="edit-title">Task Title</label>
+      <input
+        type="text"
+        id="edit-title"
+        data-testid="test-todo-edit-title-input"
+        placeholder="Task title..."
+        aria-required="true"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="edit-description">Description</label>
+      <textarea
+        id="edit-description"
+        data-testid="test-todo-edit-description-input"
+        placeholder="Add more details..."
+        aria-required="false"
+      ></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="edit-priority">Priority</label>
+        <select id="edit-priority" data-testid="test-todo-edit-priority-select" aria-label="Edit priority">
+          <option value="Low">🟢 Low</option>
+          <option value="Medium">🟡 Medium</option>
+          <option value="High" selected>🔴 High</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="edit-due-date">Due Date</label>
+        <input
+          type="date"
+          id="edit-due-date"
+          data-testid="test-todo-edit-due-date-input"
+          aria-label="Edit due date"
+        />
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button data-testid="test-todo-save-button" class="btn btn-save" aria-label="Save changes">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        Save
+      </button>
+      <button data-testid="test-todo-cancel-button" class="btn btn-cancel" aria-label="Cancel editing">
+        Cancel
+      </button>
+    </div>
+  </div>
+
 </article>
 
 <script>
-  // === Time remaining logic ===
-  const DUE_DATE = new Date('2026-04-17T23:59:00Z');
+  // ===================== STATE =====================
+  const state = {
+    title: 'Redesign the onboarding flow screens',
+    description: 'Revamp the three-step onboarding screens with updated copy and new illustrations.',
+    descriptionFull: 'Coordinate with the copy team before finalising the designs. Ensure the new flow meets WCAG AA accessibility standards and is tested across iOS, Android, and web. Illustrations should be delivered in SVG format and handed off via Figma. Timeline: designs due end of sprint, dev handoff the following Monday.',
+    priority: 'High',
+    status: 'In Progress',
+    dueDate: new Date('2026-05-01T18:00:00Z'),
+    done: false,
+    expanded: false,
+  };
 
-  function getTimeRemaining() {
-    const now = Date.now();
-    const diff = DUE_DATE.getTime() - now; // ms
-    const absDiff = Math.abs(diff);
+  // ===================== ELEMENTS =====================
+  const card         = document.querySelector('[data-testid="test-todo-card"]');
+  const titleEl      = document.querySelector('[data-testid="test-todo-title"]');
+  const descEl       = document.querySelector('[data-testid="test-todo-description"]');
+  const priorityBadge = document.querySelector('[data-testid="test-todo-priority"]');
+  const statusBadge  = document.querySelector('[data-testid="test-todo-status"]');
+  const overdueBadge = document.querySelector('[data-testid="test-todo-overdue-indicator"]');
+  const checkbox     = document.querySelector('[data-testid="test-todo-complete-toggle"]');
+  const statusCtrl   = document.querySelector('[data-testid="test-todo-status-control"]');
+  const dueDateEl    = document.querySelector('[data-testid="test-todo-due-date"]');
+  const timeRemEl    = document.querySelector('[data-testid="test-todo-time-remaining"]');
+  const expandBtn    = document.querySelector('[data-testid="test-todo-expand-toggle"]');
+  const collapsible  = document.querySelector('[data-testid="test-todo-collapsible-section"]');
+  const editBtn      = document.querySelector('[data-testid="test-todo-edit-button"]');
+  const deleteBtn    = document.querySelector('[data-testid="test-todo-delete-button"]');
+  const editForm     = document.querySelector('[data-testid="test-todo-edit-form"]');
+  const editTitle    = document.querySelector('[data-testid="test-todo-edit-title-input"]');
+  const editDesc     = document.querySelector('[data-testid="test-todo-edit-description-input"]');
+  const editPriority = document.querySelector('[data-testid="test-todo-edit-priority-select"]');
+  const editDueDate  = document.querySelector('[data-testid="test-todo-edit-due-date-input"]');
+  const saveBtn      = document.querySelector('[data-testid="test-todo-save-button"]');
+  const cancelBtn    = document.querySelector('[data-testid="test-todo-cancel-button"]');
 
-    const mins = Math.floor(absDiff / 60000);
-    const hours = Math.floor(absDiff / 3600000);
-    const days = Math.floor(absDiff / 86400000);
+  // ===================== RENDER =====================
+  function render() {
+    // Title
+    titleEl.textContent = state.title;
 
-    if (Math.abs(diff) < 60000) return { text: 'Due now!', cls: 'due-soon' };
+    // Description
+    descEl.textContent = state.description;
+
+    // Priority
+    const pMap = { Low: '🟢 Low', Medium: '🟡 Medium', High: '🔴 High' };
+    priorityBadge.textContent = pMap[state.priority];
+    priorityBadge.setAttribute('aria-label', `Priority: ${state.priority}`);
+    card.className = `priority-${state.priority.toLowerCase()}`;
+    if (state.done) card.classList.add('state-done');
+    if (state.status === 'In Progress') card.classList.add('state-inprogress');
+
+    // Status badge
+    statusBadge.textContent = state.status;
+    statusBadge.setAttribute('aria-label', `Status: ${state.status}`);
+
+    // Status control sync
+    statusCtrl.value = state.status;
+
+    // Checkbox sync
+    checkbox.checked = state.done;
+
+    // Due date display
+    const opts = { month: 'short', day: 'numeric', year: 'numeric' };
+    dueDateEl.textContent = `Due ${state.dueDate.toLocaleDateString('en-US', opts)}`;
+    dueDateEl.setAttribute('datetime', state.dueDate.toISOString());
+
+    // Time remaining
+    updateTimeRemaining();
+  }
+
+  function applyStateClasses() {
+    card.className = `priority-${state.priority.toLowerCase()}`;
+    if (state.done) card.classList.add('state-done');
+    if (state.status === 'In Progress') card.classList.add('state-inprogress');
+  }
+
+  // ===================== TIME REMAINING =====================
+  function getTimeText() {
+    if (state.done) return { text: '✓ Completed', cls: 'completed' };
+
+    const diff = state.dueDate.getTime() - Date.now();
+    const abs  = Math.abs(diff);
+    const mins  = Math.floor(abs / 60000);
+    const hours = Math.floor(abs / 3600000);
+    const days  = Math.floor(abs / 86400000);
+
+    if (abs < 60000) return { text: 'Due now!', cls: 'due-soon' };
 
     if (diff > 0) {
-      // future
-      if (days === 0 && hours < 24) {
-        if (hours === 0) return { text: `Due in ${mins} minute${mins !== 1 ? 's' : ''}`, cls: 'due-soon' };
-        return { text: `Due in ${hours} hour${hours !== 1 ? 's' : ''}`, cls: 'due-soon' };
-      }
-      if (days === 1) return { text: 'Due tomorrow', cls: '' };
-      return { text: `Due in ${days} day${days !== 1 ? 's' : ''}`, cls: '' };
+      if (mins < 60)   return { text: `Due in ${mins} minute${mins !== 1 ? 's' : ''}`, cls: 'due-soon' };
+      if (hours < 24)  return { text: `Due in ${hours} hour${hours !== 1 ? 's' : ''}`, cls: 'due-soon' };
+      if (days === 1)  return { text: 'Due tomorrow', cls: '' };
+      return { text: `Due in ${days} days`, cls: '' };
     } else {
-      // past
-      if (hours < 24) return { text: `Overdue by ${hours} hour${hours !== 1 ? 's' : ''}`, cls: 'overdue' };
+      if (hours < 1)   return { text: `Overdue by ${mins} minute${mins !== 1 ? 's' : ''}`, cls: 'overdue' };
+      if (hours < 24)  return { text: `Overdue by ${hours} hour${hours !== 1 ? 's' : ''}`, cls: 'overdue' };
       return { text: `Overdue by ${days} day${days !== 1 ? 's' : ''}`, cls: 'overdue' };
     }
   }
 
   function updateTimeRemaining() {
-    const el = document.getElementById('time-remaining');
-    const { text, cls } = getTimeRemaining();
-    el.textContent = text;
-    el.className = cls;
+    const { text, cls } = getTimeText();
+    timeRemEl.textContent = text;
+    timeRemEl.className   = cls;
+
+    // Overdue indicator & card class
+    const isOverdue = cls === 'overdue';
+    if (isOverdue) card.classList.add('is-overdue');
+    else card.classList.remove('is-overdue');
   }
 
-  updateTimeRemaining();
-  setInterval(updateTimeRemaining, 60000);
+  setInterval(updateTimeRemaining, 30000);
 
-  // === Checkbox toggle ===
-  function handleToggle(checkbox) {
-    const card = document.querySelector('[data-testid="test-todo-card"]');
-    const statusBadge = document.getElementById('status-badge');
+  // ===================== STATUS SYNC =====================
+  function setStatus(newStatus) {
+    state.status = newStatus;
+    state.done   = (newStatus === 'Done');
+    applyStateClasses();
+    statusBadge.textContent = newStatus;
+    statusBadge.setAttribute('aria-label', `Status: ${newStatus}`);
+    statusCtrl.value  = newStatus;
+    checkbox.checked  = state.done;
+    updateTimeRemaining();
+  }
 
-    if (checkbox.checked) {
-      card.classList.add('done');
-      statusBadge.textContent = 'Done';
-      statusBadge.setAttribute('aria-label', 'Status: Done');
-    } else {
-      card.classList.remove('done');
-      statusBadge.textContent = 'In Progress';
-      statusBadge.setAttribute('aria-label', 'Status: In Progress');
+  // Checkbox
+  checkbox.addEventListener('change', () => {
+    setStatus(checkbox.checked ? 'Done' : 'Pending');
+  });
+
+  // Status dropdown
+  statusCtrl.addEventListener('change', () => {
+    setStatus(statusCtrl.value);
+  });
+
+  // ===================== EXPAND / COLLAPSE =====================
+  expandBtn.addEventListener('click', () => {
+    state.expanded = !state.expanded;
+    collapsible.classList.toggle('expanded', state.expanded);
+    expandBtn.setAttribute('aria-expanded', String(state.expanded));
+    expandBtn.querySelector('.toggle-label').textContent = state.expanded ? 'Show less' : 'Show more';
+  });
+
+  // ===================== EDIT MODE =====================
+  let snapshot = {};
+
+  function openEditForm() {
+    snapshot = {
+      title: state.title,
+      description: state.description,
+      priority: state.priority,
+      dueDate: new Date(state.dueDate),
+    };
+    editTitle.value    = state.title;
+    editDesc.value     = state.description + '\n\n' + state.descriptionFull;
+    editPriority.value = state.priority;
+
+    // Format date for input
+    const d = state.dueDate;
+    const yyyy = d.getFullYear();
+    const mm   = String(d.getMonth() + 1).padStart(2, '0');
+    const dd   = String(d.getDate()).padStart(2, '0');
+    editDueDate.value  = `${yyyy}-${mm}-${dd}`;
+
+    editForm.classList.add('visible');
+    editBtn.setAttribute('aria-expanded', 'true');
+    editTitle.focus();
+  }
+
+  function closeEditForm() {
+    editForm.classList.remove('visible');
+    editBtn.setAttribute('aria-expanded', 'false');
+    editBtn.focus();
+  }
+
+  editBtn.addEventListener('click', openEditForm);
+
+  saveBtn.addEventListener('click', () => {
+    const rawVal = editDesc.value.trim();
+    state.title       = editTitle.value.trim() || state.title;
+    state.description = rawVal.length > 120 ? rawVal.slice(0, 120) + '…' : rawVal;
+    state.descriptionFull = rawVal.length > 120 ? rawVal : '';
+    state.priority    = editPriority.value;
+
+    if (editDueDate.value) {
+      state.dueDate = new Date(editDueDate.value + 'T18:00:00Z');
     }
-  }
+
+    closeEditForm();
+    render();
+  });
+
+  cancelBtn.addEventListener('click', () => {
+    closeEditForm();
+  });
+
+  // Keyboard: Escape closes edit form
+  editForm.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeEditForm();
+  });
+
+  deleteBtn.addEventListener('click', () => {
+    alert('Delete clicked');
+  });
+
+  // ===================== INIT =====================
+  render();
 </script>
 
 </body>
 </html>
+
+index.html
+Displaying index.html.
 
