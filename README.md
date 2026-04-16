@@ -8,7 +8,7 @@ Built as part of the **Frontend Wizards Internship Program — Stage 1a Task** (
 ---
 
  🔗 Live Demo
-
+https://vercel.com/lulu879s-projects/index-html2/BiwEzh8DcgaQ2ASZzHgKG6zGAwPa
 
 
 ---
@@ -105,11 +105,6 @@ Stage 0 (preserved)
 
 ---
 
- 🚀 Getting Started
-
-```bash
-git clone https://github.com/your-username/todo-card-stage-1a.git
-open index.html
 ```
 
 No build tools or dependencies required.
@@ -119,4 +114,5 @@ No build tools or dependencies required.
 ---
 
 ## 👤 Author
+
 
